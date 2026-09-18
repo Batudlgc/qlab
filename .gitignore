@@ -1,0 +1,18 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.venv/
+.ipynb_checkpoints/
+
+# Market data: re-downloadable. qlab/data.py fetches and caches it.
+data/cache/
+*.parquet
+
+# Wikipedia revision cache for universes/build_removals.py
+.cache/
+
+# Internal working documents, not part of the published repository
+ROADMAP.md
+DEFENSE_BRIEF.md
+CALL_SHEET.md
+CALL_SHEET_TR.md
