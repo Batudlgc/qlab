@@ -1,5 +1,7 @@
 # qlab
 
+[![tests](https://github.com/Batudlgc/qlab/actions/workflows/tests.yml/badge.svg)](https://github.com/Batudlgc/qlab/actions/workflows/tests.yml)
+
 Quantitative research framework built around one principle: **the validation layer matters more than the strategy layer.**
 
 Anyone can produce a backtest with a Sharpe of 2. The hard part is knowing whether it means anything. This repository is built so that self-deception is difficult, and so that when a result *does* survive, the survival means something.
@@ -13,17 +15,18 @@ git clone https://github.com/Batudlgc/qlab.git && cd qlab
 pip install -r requirements.txt
 ```
 
-Python 3.10+. The order-book and competition work needs no market data and runs offline. The two equity experiments download daily bars from Yahoo via `yfinance` on first run and cache them to `data/cache/` as parquet.
+Python 3.10+. The order-book, competition and event-loop work needs no market data and runs offline. The two equity experiments download daily bars from Yahoo via `yfinance` on first run and cache them to `data/cache/` as parquet.
 
-Start with the three test suites. They take under a minute and they are what the rest of the repository rests on:
+Start with the four test suites. They take under a minute, run on every push via GitHub Actions (Python 3.10 and 3.12), and they are what the rest of the repository rests on:
 
 ```bash
 python3 research/00_sanity_checks.py      # engine cannot see the future      (7 checks)
 python3 research/03_lob_tests.py          # order book matches correctly     (16 checks)
 python3 research/09_prosperity_tests.py   # competition harness is sound      (9 checks)
+python3 research/11_event_tests.py        # event loop is causal and costed  (10 checks)
 ```
 
-Expected output is a list of `[PASS]` lines ending in `ALL CHECKS PASSED`. Among them:
+Expected output is a list of `[PASS]` lines ending in `ALL CHECKS PASSED` or `ALL TESTS PASSED`. Among them:
 
 ```
 [PASS] perfect foresight -> huge Sharpe (sharpe=65.5)
@@ -47,6 +50,8 @@ python3 research/05_queue_competition.py     python3 research/10_prosperity_tour
 
 Each prints its tables to stdout. The write-ups in `reports/` are those tables plus the reasoning.
 
+`python3 research/12_event_demo.py` walks one simulated trade through the event loop, event by event, in under a second.
+
 ## Layout
 
 ```
@@ -60,6 +65,7 @@ qlab/
   research_log.py  append-only record of every strategy tested
   lob/             limit order book: matching, agents, markout analysis
   prosperity/      competition harness (unofficial IMC Prosperity interface)
+  events/          event-driven loop: data -> strategy -> risk -> simulated execution -> PnL
 research/          numbered experiment scripts
 reports/           research notes
 ```
@@ -71,6 +77,18 @@ reports/           research notes
 **Market microstructure** — where does market-making PnL come from, and who takes it away?
 
 **Competition harness** — a local environment for developing and stress-testing algorithmic trading entries under realistic constraints.
+
+## Event-driven loop
+
+`qlab/events/` runs a strategy the way a live system would: one tick at a time, with each stage a separate module. Market data closes bars, the strategy turns bars into a target position, risk approves or rejects it, a simulated exchange fills it, and the portfolio marks it to market. Modules never call each other. They subscribe to event types on a bus and publish new events, and the bus keeps an append-only log in which every event names its source, the reason it exists, and the event that caused it. Any fill can be traced back to the tick that triggered it.
+
+The rules that make the numbers honest are enforced in the code and checked by `research/11_event_tests.py`:
+
+- **No trading at the decision price.** An order created at tick *t* fills at tick *t+1*, at that tick's price plus half the spread and a fee.
+- **Rejected, not clipped.** A target above the position limit, or an order above the maximum size, is refused outright rather than quietly shrunk.
+- **Drawdown kill-switch.** Once equity falls too far from its peak, risk flattens the position once and refuses every later signal.
+- **Deterministic replay.** The same price path reproduces the same event log exactly.
+- **No free lunch.** On a driftless, frictionless random walk the moving-average control has a mean PnL indistinguishable from zero over 60 seeds. If it did not, the loop would be leaking information.
 
 ## Method
 
@@ -154,7 +172,9 @@ Stated here rather than left to be discovered.
 
 **Competition harness.** `prosperity/` is an **unofficial** reimplementation of the IMC Prosperity interface shape, written from public description. It is not IMC code, is not affiliated with or endorsed by IMC, and has not been validated against their engine. Manual-challenge rounds are not addressed at all.
 
-**Process.** Note 03 was published with figures its own script no longer produced, because the engine changed underneath it and nothing re-ran the experiment. Tables are not yet generated with the commit hash that produced them, and nothing checks them in CI. That is the top open item on this repository's list.
+**Event loop.** `events/` runs on simulated prices only (a seeded random walk) and connects to no broker. Orders are market orders, filled in full at the next tick: no partial fills, no queue position, no latency. The moving-average strategy in it is a control, not a candidate.
+
+**Process.** Note 03 was published with figures its own script no longer produced, because the engine changed underneath it and nothing re-ran the experiment. The test suites run in CI, but the tables in `reports/` are not yet generated with the commit hash that produced them, and nothing checks them in CI. That is the top open item on this repository's list.
 
 ## Reproducing the numbers
 
