@@ -1,0 +1,63 @@
+# research/06_staleness_and_fees.py
+# commit 53882c089b02506cdea95f42ed8c1bdab54dcce9
+# python 3.13.5, numpy 2.5.4, pandas 3.1.0
+# Regenerate with: python3 research/reproduce.py
+# ---
+EXPERIMENT E - does staleness cost anything, and under what price process?
+
+======================================================================================================================
+E1 - pure diffusion (note 03 conditions, reproduced)
+======================================================================================================================
+            flow_share  total_pnl      units  markout_per_unit  markout_vs_informed
+maker                                                                              
+every_10         0.391    150.579   2874.400             0.035               -0.128
+every_50         0.153     60.594   1128.800             0.048               -0.106
+every_step       0.456    190.068   3351.400             0.056               -0.088
+
+======================================================================================================================
+E2 - same setup, plus jumps (1% of steps, size 0.50)
+======================================================================================================================
+            flow_share  total_pnl      units  markout_per_unit  markout_vs_informed
+maker                                                                              
+every_10         0.390    170.783   3168.600            -0.085               -0.375
+every_50         0.132     -0.391   1069.800            -0.098               -0.343
+every_step       0.478    266.748   3876.400            -0.015               -0.363
+
+----------------------------------------------------------------------------------------------------------------------
+       maker | markout/unit diffusion | markout/unit w/ jumps |    change
+----------------------------------------------------------------------------------------------------------------------
+  every_step |                 0.0561 |               -0.0152 |   -0.0713
+    every_10 |                 0.0352 |               -0.0849 |   -0.1200
+    every_50 |                 0.0477 |               -0.0977 |   -0.1454
+----------------------------------------------------------------------------------------------------------------------
+
+stale-minus-fresh markout gap, diffusion : -0.0084
+stale-minus-fresh markout gap, with jumps: -0.0825
+
+If the second is materially more negative than the first, the note 03
+explanation was right: staleness is only expensive when prices gap.
+
+
+EXPERIMENT F - maker rebates
+
+total PnL by rebate level:
+maker    every_10   every_50  every_step
+rebate                                  
+0.000      170.78      -0.39      266.75
+0.005      186.63       4.96      286.13
+0.010      202.47      10.31      305.51
+0.020      234.15      21.01      344.28
+
+units traded (unchanged by rebate - the rebate does not alter behaviour here):
+maker    every_10   every_50  every_step
+rebate                                  
+0.000        3169       1070        3876
+0.005        3169       1070        3876
+0.010        3169       1070        3876
+0.020        3169       1070        3876
+
+The rebate is paid per unit resting-side filled, so it scales with volume,
+not with edge. That is precisely why it changes who is profitable: the
+high-volume maker collects the most rebate regardless of whether its
+fills were any good. A strategy that is only viable at a given rebate
+tier is a strategy whose edge is the rebate.

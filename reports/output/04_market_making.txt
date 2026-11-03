@@ -1,0 +1,52 @@
+# research/04_market_making.py
+# commit 53882c089b02506cdea95f42ed8c1bdab54dcce9
+# python 3.13.5, numpy 2.5.4, pandas 3.1.0
+# Regenerate with: python3 research/reproduce.py
+# ---
+======================================================================================================================
+EXPERIMENT A - quoting parameters.  markout horizon = 200 steps, 5 seeds x 4000 steps
+======================================================================================================================
+ half_spread       skew  total_pnl    pnl_std  spread_capture  inventory_pnl    inv_vol  mkt_vs_informed  units_informed  mkt_vs_noise  units_noise
+       0.200      0.000   1161.120     57.489         997.800        163.320     16.823           -0.655        1197.000         0.445     4643.200
+       0.200      0.010    999.790     17.327        1397.720       -397.930     14.183           -0.149        1018.600         0.195     5631.400
+       0.100      0.000    568.124     53.248         495.240         72.884     18.163           -0.727        1406.200         0.369     4520.000
+       0.100      0.010    349.879     39.403         742.595       -392.716     13.722           -0.153        1430.200         0.097     5631.600
+       0.200      0.050    333.396    198.285        1563.400      -1230.004      8.458           -0.417        1802.400         0.190     5633.800
+       0.050      0.000    267.490     42.206         248.230         19.260     19.794           -0.748        1568.000         0.328     4448.600
+       0.020      0.000     84.939     32.560          99.936        -14.997     20.941           -0.750        1698.200         0.302     4397.000
+       0.050      0.010     25.575     56.613         389.790       -364.215     12.746           -0.140        1785.600         0.048     5630.800
+       0.020      0.010   -199.546     68.610         165.288       -364.834     12.408           -0.132        2225.800         0.018     5630.400
+       0.100      0.050   -426.975    212.890         834.300      -1261.275      8.275           -0.401        2296.000         0.094     5633.800
+       0.050      0.050   -830.795    195.353         436.210      -1267.005      8.059           -0.386        2654.200         0.042     5633.800
+       0.020      0.050  -1136.396    264.946         180.684      -1317.080      8.236           -0.388        2952.400         0.014     5632.800
+
+best: half_spread=0.2 skew=0.0  PnL 1161.1 +/- 57.5  -> robust across seeds
+
+======================================================================================================================
+EXPERIMENT B - adverse selection isolated by markout
+======================================================================================================================
+ informed_intensity  total_pnl  spread_capture  inventory_pnl  mkt_vs_informed  units_informed  mkt_vs_noise  units_noise
+              0.000   1133.927        1136.720         -2.793              NaN           0.000         0.197     5518.000
+              0.100   1157.799        1112.000         45.799           -0.619         613.200         0.300     5186.800
+              0.300   1161.120         997.800        163.320           -0.655        1197.000         0.445     4643.200
+              0.500   1165.469         949.080        216.389           -0.645        1437.600         0.518     4425.200
+              0.700   1164.515         904.080        260.435           -0.639        1685.600         0.586     4168.600
+
+At 70% informed intensity, per unit traded:
+  against informed flow : -0.6387  (1686 units)
+  against noise flow    : +0.5864  (4169 units)
+  the informed counterparty costs 1.1x more per unit than the uninformed one pays
+
+Reading:
+  Markout against informed flow is consistently negative and markout against
+  noise flow consistently positive. That is adverse selection, measured directly
+  and independent of inventory drift or reference-price staleness.
+
+  Total PnL does not fall as informed intensity rises, because informed order
+  flow also drags the maker's reference price toward fair value. The maker pays
+  for information on every fill and receives it on every print. Whether that
+  trade is worth taking is a parameter question, not a universal law - which is
+  precisely why it has to be measured rather than assumed.
+
+  Note that spread capture stays positive in every configuration. A maker can be
+  earning its quoted spread on every single fill and still lose money.

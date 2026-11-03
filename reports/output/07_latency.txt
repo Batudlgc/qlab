@@ -1,0 +1,71 @@
+# research/07_latency.py
+# commit 53882c089b02506cdea95f42ed8c1bdab54dcce9
+# python 3.13.5, numpy 2.5.4, pandas 3.1.0
+# Regenerate with: python3 research/reproduce.py
+# ---
+
+================================================================================================================
+G1 - field with maximum latency 20
+================================================================================================================
+        flow_share      units  total_pnl  markout_per_unit  markout_sd
+maker                                                                 
+lat_0        0.079    746.700   -368.695            -0.306       0.288
+lat_2        0.086    811.200   -471.025             0.092       0.710
+lat_5        0.071    668.200   -368.438            -0.182       0.284
+lat_10       0.079    742.500   -424.124            -0.273       0.347
+lat_15       0.085    802.700   -471.098            -0.125       0.360
+lat_20       0.599   5629.200  -3796.396            -0.508       0.383
+
+================================================================================================================
+G2 - identical, except two slower makers added
+================================================================================================================
+        flow_share      units  total_pnl  markout_per_unit  markout_sd
+maker                                                                 
+lat_0        0.051    478.400   -320.396            -0.310       0.264
+lat_2        0.050    467.800   -186.436             0.151       0.666
+lat_5        0.042    390.700   -236.013            -0.157       0.307
+lat_10       0.044    416.900   -224.803            -0.262       0.335
+lat_15       0.049    457.900   -256.920            -0.103       0.410
+lat_20       0.050    466.600   -254.872            -0.039       0.305
+lat_30       0.052    485.700   -215.868            -0.066       0.312
+lat_40       0.664   6244.600  -4201.824            -0.524       0.384
+
+================================================================================================================
+G3 - where did the flow go?
+================================================================================================================
+  field max latency 20 -> flow concentrates on lat_20 (59.9%)
+  field max latency 40 -> flow concentrates on lat_40 (66.4%)
+
+  lat_20 share when it was slowest :  59.9%
+  lat_20 share when it was not     :   5.0%
+
+  The same agent, with the same latency, in the same market process.
+  Its exposure changed because the competition changed.
+
+================================================================================================================
+G4 - is there a markout ladder? (10 seeds, mean +/- 1 sd)
+================================================================================================================
+    lat_0: -0.3098 +/- 0.2637   <- not distinguishable from zero
+    lat_2: +0.1507 +/- 0.6663   <- not distinguishable from zero
+    lat_5: -0.1565 +/- 0.3066   <- not distinguishable from zero
+   lat_10: -0.2618 +/- 0.3352   <- not distinguishable from zero
+   lat_15: -0.1028 +/- 0.4100   <- not distinguishable from zero
+   lat_20: -0.0385 +/- 0.3051   <- not distinguishable from zero
+   lat_30: -0.0656 +/- 0.3121   <- not distinguishable from zero
+   lat_40: -0.5240 +/- 0.3842   <- not distinguishable from zero
+
+  No. Across-seed dispersion swamps the differences. The only entry that
+  even approaches significance is the slowest maker, and at ~1.4 sd it
+  would not survive a serious test. Reporting a monotonic 'cost of
+  latency' from these numbers would be reading a trend into noise.
+
+  For reference: lag drift is sigma*sqrt(L), which reaches the quoted
+  half-spread of 0.1 at L = 25 steps. The flow discontinuity
+  does not sit at that value in either field, which is further evidence
+  the effect is relative rather than absolute.
+
+----------------------------------------------------------------------------------------------------------------
+What this establishes: latency's cost is competitive, not intrinsic.
+What it does not: any per-step price for latency. That needs a venue
+model with a fixed reference population, not a self-referential field.
+----------------------------------------------------------------------------------------------------------------
