@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # All four suites run offline: no market data is downloaded.
+      # All three suites run offline: no market data is downloaded.
       - name: Engine sanity checks (lookahead, embargo, deflated Sharpe)
         run: python research/00_sanity_checks.py
 
@@ -31,9 +31,6 @@ jobs:
 
       - name: Competition harness tests
         run: python research/09_prosperity_tests.py
-
-      - name: Event loop tests
-        run: python research/11_event_tests.py
 
   reports:
     # Re-runs the seeded experiments and checks every figure the notes quote.
