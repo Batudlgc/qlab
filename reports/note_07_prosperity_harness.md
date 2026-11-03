@@ -34,6 +34,7 @@ What the engine enforces:
 
 Nine tests in `research/09_prosperity_tests.py`. The two that matter most:
 
+<!-- source: reports/output/09_prosperity_tests.txt -->
 | Test | Result |
 |---|---|
 | Crossing the spread every tick | −13,665 — paying the spread must cost |
@@ -43,6 +44,8 @@ Nine tests in `research/09_prosperity_tests.py`. The two that matter most:
 If the last two had not separated, the harness would be a machine for generating fake profits.
 
 ## Selection, done properly
+
+<!-- source: reports/output/10_prosperity_tournament.txt -->
 
 **Baselines** on the tuning regime, 8 seeds × 1,500 ticks:
 

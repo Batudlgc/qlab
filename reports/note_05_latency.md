@@ -1,5 +1,7 @@
 # Research Note 05 — Latency Is a Position, Not a Quantity
 
+<!-- source: reports/output/07_latency.txt -->
+
 **August 2026 · Batu Dallıağaç**
 
 ## Summary

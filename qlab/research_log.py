@@ -6,10 +6,14 @@ If you do not log your failures, your Sharpe is a lie.
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
-LOG = Path(__file__).resolve().parent.parent / "reports" / "research_log.jsonl"
+# QLAB_RESEARCH_LOG redirects the log, so research/reproduce.py can re-run sweeps
+# without appending to the committed record.
+LOG = Path(os.environ.get("QLAB_RESEARCH_LOG")
+           or Path(__file__).resolve().parent.parent / "reports" / "research_log.jsonl")
 LOG.parent.mkdir(parents=True, exist_ok=True)
 
 

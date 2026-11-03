@@ -1,5 +1,7 @@
 # Research Note 04 — Staleness Is Nearly Free Until Prices Gap
 
+<!-- source: reports/output/06_staleness_and_fees.txt -->
+
 **August 2026 · Batu Dallıağaç · revised September 2026**
 
 > **Revision notice.** The August version of this note reported a
