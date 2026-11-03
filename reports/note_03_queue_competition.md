@@ -1,5 +1,7 @@
 # Research Note 03 — What Two Ticks of Price Improvement Actually Buy
 
+<!-- source: reports/output/05_queue_competition.txt -->
+
 **August 2026 · Batu Dallıağaç · revised September 2026**
 
 > **Revision notice.** The August version of this note opened with the claim that
@@ -60,6 +62,7 @@ separately in experiment D, where it is the variable of interest.
 
 Three makers at half-spreads 0.08, 0.10, 0.12, no inventory constraints:
 
+<!-- inputs: Half-spread -->
 | Maker | Half-spread | Flow share | Total PnL | Spread capture | Inventory PnL |
 |---|---|---|---|---|---|
 | tight | 0.08 | **93.1%** | **+373.0** | +542.8 | −169.8 |

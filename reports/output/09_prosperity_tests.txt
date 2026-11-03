@@ -1,0 +1,16 @@
+# research/09_prosperity_tests.py
+# commit 53882c089b02506cdea95f42ed8c1bdab54dcce9
+# python 3.13.5, numpy 2.5.4, pandas 3.1.0
+# Regenerate with: python3 research/reproduce.py
+# ---
+[PASS] DoNothing scores exactly zero 
+[PASS] position limit respected (max |pos| = 20)
+[PASS] oversized order rejected (rejected=50)
+[PASS] exceptions recorded (30)
+[PASS] paying the spread loses money (pnl=-13665)
+[PASS] unknown symbol rejected 
+[PASS] traderData persists across ticks (last=9)
+[PASS] uninformed flow is profitable for a maker (2970)
+[PASS] fully informed flow is not (toxic=-120 vs clean=2970)
+
+ALL TESTS PASSED

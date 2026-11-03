@@ -68,6 +68,7 @@ qlab/
   events/          event-driven loop: data -> strategy -> risk -> simulated execution -> PnL
 research/          numbered experiment scripts
 reports/           research notes
+  output/          commit-stamped experiment output the notes are checked against
 ```
 
 ## Three problem classes
@@ -174,13 +175,24 @@ Stated here rather than left to be discovered.
 
 **Event loop.** `events/` runs on simulated prices only (a seeded random walk) and connects to no broker. Orders are market orders, filled in full at the next tick: no partial fills, no queue position, no latency. The moving-average strategy in it is a control, not a candidate.
 
-**Process.** Note 03 was published with figures its own script no longer produced, because the engine changed underneath it and nothing re-ran the experiment. The test suites run in CI, but the tables in `reports/` are not yet generated with the commit hash that produced them, and nothing checks them in CI. That is the top open item on this repository's list.
+**Process.** Note 03 was published with figures its own script no longer produced, because the engine changed underneath it and nothing re-ran the experiment. The offline notes (02–05, 07) are now checked in CI against commit-stamped output (see below), but two gaps remain. Notes 01 and 06 rest on live market data and are not checked at all. And the check confirms that each figure in a note's tables appears somewhere in the output it cites, at the note's precision; it does not confirm the figure sits in the right row, so a number moved to the wrong cell could still pass.
 
 ## Reproducing the numbers
 
 Every table in `reports/` is stdout from the script named in that note's footer. Strategy sweeps are additionally recorded in `reports/research_log.jsonl` with parameters and full statistics, which is what the multiple-testing corrections count.
 
 Order-book and competition results are seeded and deterministic — the same command gives the same table. The two equity experiments are not: they pull live data, and as note 06 documents, that data changes.
+
+The deterministic experiments are pinned to the code that produced them:
+
+```bash
+python3 research/reproduce.py           # re-run 04-07, 09, 10; write reports/output/<script>.txt
+python3 research/reproduce.py --check   # re-run and compare, writing nothing (runs in CI)
+```
+
+Each file in `reports/output/` starts with the commit that produced it. `--check` fails if an experiment's output no longer reproduces, if the code under it (`qlab/`, its script, `requirements.txt`) has changed since that commit, or if a figure in a note's tables is missing from the output the note cites. After changing the engine, commit the code first, then run `reproduce.py` and commit the new output, so the stamp names a commit that exists.
+
+`reproduce.py` runs the sweeps against a throwaway copy of the research log. Running `10_prosperity_tournament.py` directly still appends its 48 configurations to `reports/research_log.jsonl`, which is the intended record of trials actually run.
 
 ## Not investment advice
 

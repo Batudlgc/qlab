@@ -1,0 +1,60 @@
+# research/10_prosperity_tournament.py
+# commit 53882c089b02506cdea95f42ed8c1bdab54dcce9
+# python 3.13.5, numpy 2.5.4, pandas 3.1.0
+# Regenerate with: python3 research/reproduce.py
+# ---
+============================================================================================================
+STEP 1 - baselines on the tuning regime
+============================================================================================================
+                       mean_pnl     sd_pnl  worst_seed    mean_dd     volume     t_stat
+DoNothing                  0.00       0.00        0.00       0.00       0.00        NaN
+MarketMaker(default)    2117.88     605.49     1239.00    -323.38    3368.25       9.89
+MeanReversion          -2123.38     501.93    -2832.00   -2229.38     794.75     -11.97
+
+============================================================================================================
+STEP 2 - parameter sweep, every configuration logged
+============================================================================================================
+configurations tested: 48
+
+ edge  size       skew   mean_pnl     sd_pnl  worst_seed    mean_dd     volume     t_stat
+    2    12       1.00    2968.25     519.68     2228.50    -259.75    2354.75      16.16
+    2     8       0.50    2965.19     582.06     1975.00    -347.00    2223.38      14.41
+    2    16       0.50    2962.19     586.27     1970.00    -346.00    2223.12      14.29
+    2    12       0.50    2962.19     586.27     1970.00    -346.00    2223.12      14.29
+    2    16       1.00    2961.88     515.19     2228.50    -262.12    2354.75      16.26
+    2     8       1.00    2959.88     506.68     2256.50    -263.31    2351.50      16.52
+
+worst 3:
+ edge  size       skew   mean_pnl     sd_pnl  worst_seed    mean_dd     volume     t_stat
+    1    12       2.00     951.00     332.59      466.50    -369.62    3746.25       8.09
+    3     4       0.00     917.44    1216.44     -740.00    -703.88     675.88       2.13
+    1    16       2.00     644.00     332.33      334.00    -439.25    3829.62       5.48
+
+best on tuning seeds: edge=2 size=12 skew=1.0  pnl 2968 +/- 520
+dispersion of mean_pnl across the 48 configs: 605
+
+============================================================================================================
+STEP 3 - does the winner hold up on seeds it was not selected on?
+============================================================================================================
+                        mean_pnl     sd_pnl  worst_seed    mean_dd     volume     t_stat
+champion_tuning          2968.25     519.68     2228.50    -259.75    2354.75      16.16
+champion_holdout         2829.50     544.73     1948.00    -245.19    2371.25      14.69
+median_config_holdout    1927.69     661.91     1074.00    -275.56    1138.00       8.24
+
+selection decay: +4.7% of tuning PnL lost out of sample
+champion beats median config out of sample by +902 (meaningful)
+
+============================================================================================================
+STEP 4 - regime robustness (champion, holdout seeds)
+============================================================================================================
+         mean_pnl     sd_pnl  worst_seed    mean_dd     volume     t_stat
+calm      4552.00     432.19     3926.00    -101.31    2531.38      29.79
+normal    2829.50     544.73     1948.00    -245.19    2371.25      14.69
+jumpy     2057.25     505.54     1310.00    -350.88    2473.00      11.51
+toxic     2273.56     553.95     1514.00    -272.25    2279.12      11.61
+
+regimes where the champion does not make money: none
+A configuration tuned on one regime and deployed into another is the
+most common way a competition entry dies on the day.
+
+total configurations in the research log (all projects): 211

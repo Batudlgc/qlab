@@ -1,5 +1,7 @@
 # Research Note 02 — Measuring Adverse Selection Without Fooling Yourself
 
+<!-- source: reports/output/04_market_making.txt -->
+
 **August 2026 · Batu Dallıağaç**
 
 ## Summary

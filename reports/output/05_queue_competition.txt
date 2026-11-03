@@ -1,0 +1,64 @@
+# research/05_queue_competition.py
+# commit 53882c089b02506cdea95f42ed8c1bdab54dcce9
+# python 3.13.5, numpy 2.5.4, pandas 3.1.0
+# Regenerate with: python3 research/reproduce.py
+# ---
+
+========================================================================================================================
+EXPERIMENT A - control: three identical makers
+========================================================================================================================
+       flow_share  total_pnl  spread_capture  inventory_pnl      units  markout_per_unit  markout_vs_informed  avg_queue_ahead
+maker                                                                                                                         
+mm0         0.342    151.182         218.135        -66.953   2532.000             0.039               -0.104            1.812
+mm1         0.333    154.077         212.129        -58.052   2464.600             0.053               -0.086            2.062
+mm2         0.325    160.035         207.582        -47.547   2403.000             0.054               -0.104            1.994
+
+flow share spread = 1.7 percentage points.
+PASS - no structural bias in requote ordering.
+
+========================================================================================================================
+EXPERIMENT B - price priority: what does two ticks of improvement buy?
+========================================================================================================================
+       flow_share  total_pnl  spread_capture  inventory_pnl      units  markout_per_unit  markout_vs_informed  avg_queue_ahead
+maker                                                                                                                         
+mid         0.069     28.813          38.590         -9.777    505.800             0.043               -0.131            0.025
+tight       0.931    372.984         542.792       -169.808   6808.400             0.042               -0.107            0.231
+wide        0.000      0.422           0.080          0.342      1.000               NaN                  NaN            0.375
+
+Price priority is close to absolute. Two ticks inside takes essentially
+all the flow; the makers behind it are not competing, they are queueing
+for the residual that walks past the top of book.
+
+========================================================================================================================
+EXPERIMENT C - requote frequency: fresh price vs queue position
+========================================================================================================================
+            flow_share  total_pnl  spread_capture  inventory_pnl      units  markout_per_unit  markout_vs_informed  avg_queue_ahead
+maker                                                                                                                              
+every_10         0.391    150.579         250.400        -99.821   2874.400             0.035               -0.128            2.898
+every_50         0.153     60.594          91.143        -30.549   1128.800             0.048               -0.106            4.533
+every_step       0.456    190.068         288.262        -98.194   3351.400             0.056               -0.088            2.822
+
+Cancelling to refresh forfeits FIFO priority; holding a quote keeps the
+priority but leaves a stale price exposed. Compare markout_vs_informed
+across the three: that column is the price of staleness.
+
+========================================================================================================================
+EXPERIMENT D - inventory skew, studied deliberately (cap = 50)
+========================================================================================================================
+            flow_share  total_pnl  spread_capture  inventory_pnl      units  markout_per_unit  markout_vs_informed  avg_queue_ahead
+maker                                                                                                                              
+skew_0.00        0.286     47.128         187.995       -140.867   2251.400             0.015               -0.228            1.582
+skew_0.002       0.310    -10.868         205.106       -215.974   2435.400            -0.006               -0.208            1.637
+skew_0.01        0.404     71.316         263.259       -191.943   3173.200             0.023               -0.196            1.156
+
+Skew x max_inventory must stay small relative to the spread you quote,
+or inventory management silently becomes your pricing policy.
+Here 0.01 x 50 = 0.50 against a half-spread of 0.10 - the tail wagging the dog.
+
+------------------------------------------------------------------------------------------------------------------------
+Summary of what is and is not established:
+  established : price priority dominates queue priority; staleness is paid
+                for in adverse selection; skew can swamp quoted spread.
+  NOT established : anything about latency, fees, or maker rebates -
+                none of which this simulation models.
+------------------------------------------------------------------------------------------------------------------------

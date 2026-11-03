@@ -34,3 +34,22 @@ jobs:
 
       - name: Event loop tests
         run: python research/11_event_tests.py
+
+  reports:
+    # Re-runs the seeded experiments and checks every figure the notes quote.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history, to compare code against each output's stamped commit
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Report figures reproduce from the code
+        run: python research/reproduce.py --check
