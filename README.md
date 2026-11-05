@@ -93,7 +93,7 @@ A single train/test split gives one number with no error bar, and a k-fold split
 
 3. **Costs are mandatory.** `backtest.Costs` defaults to **4 bps per side** — 1 bp commission, 2 bps spread, 1 bp slippage — and is deliberately pessimistic for US large caps. Strategies are evaluated net. A strategy that only works at zero cost does not work. Both gross and net Sharpe are reported so the cost drag is visible rather than buried.
 
-4. **Log every trial, including failures.** `reports/research_log.jsonl` holds 163 entries. An unlogged failure is a lie by omission — it silently shrinks the denominator of every multiple-testing correction you later compute.
+4. **Log every trial, including failures.** `reports/research_log.jsonl` holds 179 entries. An unlogged failure is a lie by omission — it silently shrinks the denominator of every multiple-testing correction you later compute.
 
 5. **Deflate the Sharpe.** `validation.deflated_sharpe(returns, n_trials)` corrects for selection (Bailey & López de Prado, 2014). If you tried 66 strategies, the best one's Sharpe is inflated, and this quantifies by how much.
 
