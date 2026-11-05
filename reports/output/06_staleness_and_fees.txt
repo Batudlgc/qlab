@@ -1,5 +1,5 @@
 # research/06_staleness_and_fees.py
-# commit c2001bf35204160baf52c29d26d12713236fc3ad
+# commit 61d9693cbefb99b0169c5151119ef9ffdf540c6d
 # python 3.13.5, numpy 2.5.4, pandas 3.1.0
 # Regenerate with: python3 research/reproduce.py
 # ---
