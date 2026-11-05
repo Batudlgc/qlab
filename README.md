@@ -17,13 +17,14 @@ pip install -r requirements.txt
 
 Python 3.10+. The order-book and competition work needs no market data and runs offline. The two equity experiments download daily bars from Yahoo via `yfinance` on first run and cache them to `data/cache/` as parquet.
 
-Start with the four test suites. They take under a minute, run on every push via GitHub Actions (Python 3.10 and 3.12), and they are what the rest of the repository rests on:
+Start with the five test suites. They take under a minute, run on every push via GitHub Actions (Python 3.10 and 3.12), and they are what the rest of the repository rests on:
 
 ```bash
 python3 research/00_sanity_checks.py      # engine cannot see the future      (7 checks)
 python3 research/03_lob_tests.py          # order book matches correctly     (16 checks)
 python3 research/09_prosperity_tests.py   # competition harness is sound      (9 checks)
 python3 research/11_smc_data_tests.py     # crypto data is verified and clean (24 checks)
+python3 research/13_smc_structure_tests.py # structure detection is causal   (27 checks)
 ```
 
 Expected output is a list of `[PASS]` lines ending in `ALL CHECKS PASSED` or `ALL TESTS PASSED`. Among them:
