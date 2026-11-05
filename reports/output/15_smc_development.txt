@@ -1,0 +1,46 @@
+# research/15_smc_development.py
+# commit 4794a9e3bcc4a3ff959509c8a36caafa2af0d6e8
+# python 3.13.5, numpy 2.5.4, pandas 3.1.0
+# Regenerate with: python3 research/15_smc_development.py (needs the downloaded data)
+# ---
+Development 2018-01-01 .. 2025-04-30 23:59:00, BTCUSDT + ETHUSDT, costs 0.100%/side + 2 bps stop slippage, control 200 seeds
+
+variant                            trades  mean R    se  gross  cost   win    PF  maxDD yrs+   ctrl ctrl95 Sharpe   DSR  qualifies
+15min/4h 3r proximal silver           267  -0.148 0.112 +0.120 0.267 28.5%  0.84   56.0    2 -0.159 +0.003  -0.47 0.000  no
+15min/4h 3r mid silver                229  -0.204 0.120 +0.097 0.300 27.9%  0.79   56.0    3 -0.233 -0.028  -0.60 0.000  no
+15min/4h 3r proximal all             1365  -0.247 0.048 +0.008 0.255 25.7%  0.74  342.6    0 -0.174 -0.099  -1.78 0.000  no
+15min/4h 3r mid all                  1208  -0.280 0.051 +0.018 0.298 26.0%  0.71  344.1    0 -0.238 -0.153  -1.88 0.000  no
+15min/4h liquidity proximal silver    243  -0.345 0.129 +0.009 0.354 27.6%  0.66   85.2    2 -0.261 -0.066  -0.94 0.000  no
+15min/4h liquidity mid silver         219  -0.347 0.134 +0.016 0.363 26.0%  0.67   78.1    2 -0.299 -0.054  -0.88 0.000  no
+15min/4h liquidity proximal all      1249  -0.369 0.051 -0.067 0.302 25.7%  0.63  468.6    0 -0.256 -0.159  -2.47 0.000  no
+15min/4h liquidity mid all           1161  -0.386 0.056 -0.019 0.367 26.2%  0.63  450.7    0 -0.320 -0.228  -2.35 0.000  no
+5min/1h 3r proximal all              4140  -0.587 0.028 -0.053 0.534 24.6%  0.51 2434.8    0 -0.540 -0.498  -6.79 0.000  no
+5min/1h 3r proximal silver            580  -0.628 0.075 -0.110 0.518 23.1%  0.48  363.1    0 -0.519 -0.391  -2.85 0.000  no
+5min/1h 3r mid all                   3546  -0.671 0.031 -0.055 0.616 24.6%  0.47 2382.7    0 -0.630 -0.581  -7.09 0.000  no
+5min/1h liquidity proximal all       4087  -0.697 0.054 -0.069 0.628 25.0%  0.46 2850.9    0 -0.637 -0.594  -4.56 0.000  no
+5min/1h 3r mid silver                 485  -0.741 0.083 -0.148 0.593 22.5%  0.43  358.6    0 -0.606 -0.481  -2.98 0.000  no
+5min/1h liquidity mid all            3633  -0.810 0.048 -0.081 0.729 23.9%  0.42 2945.5    0 -0.749 -0.700  -5.88 0.000  no
+5min/1h liquidity mid silver          482  -0.864 0.085 -0.198 0.666 22.4%  0.37  416.3    0 -0.694 -0.545  -3.33 0.000  no
+5min/1h liquidity proximal silver     559  -1.005 0.283 -0.206 0.799 23.3%  0.34  564.2    0 -0.780 -0.687  -1.28 0.000  no
+
+mean R by year (2018-2024) and by symbol:
+15min/4h 3r proximal silver        -0.41 +0.09 -0.20 +0.68 -0.37 -0.45 -0.02   BTC -0.163 ETH -0.133
+15min/4h 3r mid silver             -0.87 +0.39 -0.71 +0.57 -0.73 -0.45 +0.30   BTC -0.207 ETH -0.201
+15min/4h 3r proximal all           -0.32 -0.01 -0.27 -0.16 -0.20 -0.47 -0.25   BTC -0.297 ETH -0.203
+15min/4h 3r mid all                -0.52 -0.01 -0.09 -0.17 -0.39 -0.50 -0.28   BTC -0.317 ETH -0.246
+15min/4h liquidity proximal silver -0.86 +0.04 -0.24 +0.29 -0.45 -0.56 -0.17   BTC -0.468 ETH -0.215
+15min/4h liquidity mid silver      -1.04 +0.17 -0.16 +0.19 -0.71 -0.19 -0.32   BTC -0.488 ETH -0.212
+15min/4h liquidity proximal all    -0.46 -0.15 -0.40 -0.37 -0.28 -0.65 -0.30   BTC -0.427 ETH -0.315
+15min/4h liquidity mid all         -0.56 -0.17 -0.17 -0.29 -0.39 -0.66 -0.44   BTC -0.509 ETH -0.269
+5min/1h 3r proximal all            -0.25 -0.40 -0.49 -0.38 -0.63 -1.01 -0.74   BTC -0.662 ETH -0.509
+5min/1h 3r proximal silver         -0.54 -0.40 -0.39 -0.30 -0.81 -0.94 -0.72   BTC -0.612 ETH -0.645
+5min/1h 3r mid all                 -0.40 -0.55 -0.52 -0.45 -0.66 -1.09 -0.83   BTC -0.783 ETH -0.554
+5min/1h liquidity proximal all     -0.46 -0.48 -0.58 -0.46 -0.64 -1.02 -0.80   BTC -0.774 ETH -0.617
+5min/1h 3r mid silver              -0.73 -0.60 -0.52 -0.33 -0.89 -1.06 -0.84   BTC -0.721 ETH -0.762
+5min/1h liquidity mid all          -0.65 -0.62 -0.60 -0.55 -0.71 -1.30 -1.01   BTC -0.939 ETH -0.675
+5min/1h liquidity mid silver       -0.79 -0.40 -0.64 -0.64 -0.86 -1.24 -1.10   BTC -0.855 ETH -0.873
+5min/1h liquidity proximal silver  -0.55 -0.49 -0.49 -0.57 -0.78 -1.14 -0.78   BTC -0.761 ETH -1.256
+
+SELECTION: no variant qualifies (>= 300 trades and positive mean R in >= 5 of 7 years).
+Under the pre-registration the strategy has failed. The holdout is not opened.
+research log: 179 entries
