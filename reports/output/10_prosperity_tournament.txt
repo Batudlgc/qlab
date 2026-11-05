@@ -1,5 +1,5 @@
 # research/10_prosperity_tournament.py
-# commit ae10a986b7f8bde0c0c826d5505306f3a011a4eb
+# commit c2001bf35204160baf52c29d26d12713236fc3ad
 # python 3.13.5, numpy 2.5.4, pandas 3.1.0
 # Regenerate with: python3 research/reproduce.py
 # ---
