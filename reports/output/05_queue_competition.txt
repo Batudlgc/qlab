@@ -1,5 +1,5 @@
 # research/05_queue_competition.py
-# commit 61d9693cbefb99b0169c5151119ef9ffdf540c6d
+# commit c89f7b6e7dc5a82d09144667fb68843db2f18b2e
 # python 3.13.5, numpy 2.5.4, pandas 3.1.0
 # Regenerate with: python3 research/reproduce.py
 # ---
