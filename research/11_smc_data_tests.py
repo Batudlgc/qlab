@@ -64,6 +64,18 @@ check("header row tolerated", len(data.parse(make_zip("2024-12", header=True), "
 check("rows outside the month rejected",
       raises(lambda: data.parse(make_zip("2024-11"), "2024-12"), ValueError))
 
+# 3b. bars offset from the minute (as in Dec 2017) are dropped and counted, not floored
+buf = io.BytesIO()
+t0 = int(pd.Timestamp("2024-12-01").timestamp()) * 1000
+rows = [f"{t0 + i * 60_000 + (20_799 if 2 <= i < 5 else 0)},1,1,1,1,1,0,0,1,0,0,0" for i in range(10)]
+with zipfile.ZipFile(buf, "w") as z:
+    z.writestr("X.csv", "\n".join(rows) + "\n")
+shifted = data.parse(buf.getvalue(), "2024-12")
+check("off-minute bars dropped, not floored",
+      len(shifted) == 7 and (shifted.index == shifted.index.floor("min")).all()
+      and pd.Timestamp("2024-12-01 00:02") not in shifted.index)
+check("off-minute drops counted", shifted.attrs["off_minute_dropped"] == 3)
+
 # 4. checksums: a match passes, a corrupted download is refused
 blob = make_zip("2024-12")
 good = hashlib.sha256(blob).hexdigest() + "  X-1m-2024-12.zip\n"

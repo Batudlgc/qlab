@@ -18,6 +18,7 @@ from __future__ import annotations
 import hashlib
 import io
 import logging
+import ssl
 import sys
 import urllib.request
 import zipfile
@@ -63,9 +64,18 @@ def _guard(month: str, holdout: bool) -> None:
 
 # ---------------------------------------------------------------- download
 
+def _ssl_context() -> ssl.SSLContext:
+    # python.org builds on macOS ship without a CA bundle; use certifi's when it is there
+    try:
+        import certifi
+        return ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        return ssl.create_default_context()
+
+
 def _http_get(url: str) -> bytes:
     req = urllib.request.Request(url, headers={"User-Agent": "qlab"})
-    with urllib.request.urlopen(req, timeout=60) as r:
+    with urllib.request.urlopen(req, timeout=60, context=_ssl_context()) as r:
         return r.read()
 
 
@@ -123,8 +133,17 @@ def parse(blob: bytes, month: str) -> pd.DataFrame:
     outside = (df.index < start) | (df.index >= start + pd.offsets.MonthBegin(1))
     if outside.any():
         raise ValueError(f"{month}: {outside.sum()} rows outside the month")
-    if (df.index != df.index.floor("min")).any():
-        raise ValueError(f"{month}: timestamps not on minute boundaries")
+
+    # Two blocks in the archive have bars whose open time is offset from the minute by a
+    # constant, in both BTCUSDT and ETHUSDT: 20.799 s from 4 to 18 Dec 2017 and 14.789 s
+    # on 9-10 Feb 2018.
+    # Flooring them would let each bar carry part of the next minute, so they are dropped
+    # and left as missing minutes, which resample() then handles like any other gap.
+    off = df.index != df.index.floor("min")
+    if off.any():
+        log.warning("%s: dropped %d bars not aligned to the minute", month, off.sum())
+        df = df[~off]
+    df.attrs["off_minute_dropped"] = int(off.sum())
     return df
 
 
@@ -141,10 +160,12 @@ def build(symbol: str, holdout: bool = False) -> pd.DataFrame:
     if missing:
         raise FileNotFoundError(f"{symbol}: {len(missing)} months not downloaded, "
                                 f"first {missing[0]}; run download() first")
-    df = pd.concat([parse(raw_path(symbol, m).read_bytes(), m) for m in month_list])
+    parts = [parse(raw_path(symbol, m).read_bytes(), m) for m in month_list]
+    df = pd.concat(parts)
     lo, hi = (HOLDOUT_START, HOLDOUT_END) if holdout else (df.index[0], DEV_END)
     df = df[(df.index >= lo) & (df.index <= hi)]
     df.to_parquet(frame_path(symbol, holdout))
+    df.attrs["off_minute_dropped"] = sum(p.attrs["off_minute_dropped"] for p in parts)
     return df
 
 
@@ -189,4 +210,5 @@ if __name__ == "__main__":
         n = download(s, dev_months())
         df = build(s)
         print(f"{s}: fetched {n} months, {len(df):,} minutes "
-              f"{df.index[0]} .. {df.index[-1]} -> {frame_path(s, False).name}")
+              f"{df.index[0]} .. {df.index[-1]}, {df.attrs['off_minute_dropped']:,} off-minute "
+              f"bars dropped -> {frame_path(s, False).name}")

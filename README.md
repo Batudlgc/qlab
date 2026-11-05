@@ -23,7 +23,7 @@ Start with the four test suites. They take under a minute, run on every push via
 python3 research/00_sanity_checks.py      # engine cannot see the future      (7 checks)
 python3 research/03_lob_tests.py          # order book matches correctly     (16 checks)
 python3 research/09_prosperity_tests.py   # competition harness is sound      (9 checks)
-python3 research/11_smc_data_tests.py     # crypto data is verified and clean (22 checks)
+python3 research/11_smc_data_tests.py     # crypto data is verified and clean (24 checks)
 ```
 
 Expected output is a list of `[PASS]` lines ending in `ALL CHECKS PASSED` or `ALL TESTS PASSED`. Among them:
