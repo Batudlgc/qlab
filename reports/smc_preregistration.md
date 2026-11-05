@@ -126,6 +126,7 @@ Each runs on small hand-built price series with a known answer:
 | Date | Change | Counted as new trial? |
 |---|---|---|
 | 3 Nov 2026 | Initial pre-registration. | — |
+| 5 Nov 2026 | Data handling, found while building the development data and before any strategy code exists: two blocks in the Binance archive have bars offset from the minute by a constant (20.799 s, 4–18 Dec 2017; 14.789 s, 9–10 Feb 2018; both symbols). They are dropped and treated as missing minutes rather than floored, which would let a bar carry part of the next minute. The first block lies in the warm-up. | No: no strategy rule or parameter changes. |
 
 ---
 

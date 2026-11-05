@@ -17,12 +17,13 @@ pip install -r requirements.txt
 
 Python 3.10+. The order-book and competition work needs no market data and runs offline. The two equity experiments download daily bars from Yahoo via `yfinance` on first run and cache them to `data/cache/` as parquet.
 
-Start with the three test suites. They take under a minute, run on every push via GitHub Actions (Python 3.10 and 3.12), and they are what the rest of the repository rests on:
+Start with the four test suites. They take under a minute, run on every push via GitHub Actions (Python 3.10 and 3.12), and they are what the rest of the repository rests on:
 
 ```bash
 python3 research/00_sanity_checks.py      # engine cannot see the future      (7 checks)
 python3 research/03_lob_tests.py          # order book matches correctly     (16 checks)
 python3 research/09_prosperity_tests.py   # competition harness is sound      (9 checks)
+python3 research/11_smc_data_tests.py     # crypto data is verified and clean (24 checks)
 ```
 
 Expected output is a list of `[PASS]` lines ending in `ALL CHECKS PASSED` or `ALL TESTS PASSED`. Among them:
@@ -62,6 +63,7 @@ qlab/
   research_log.py  append-only record of every strategy tested
   lob/             limit order book: matching, agents, markout analysis
   prosperity/      competition harness (unofficial IMC Prosperity interface)
+  smc/             sweep / structure-shift / FVG strategy on BTC and ETH (in progress)
 research/          numbered experiment scripts
 reports/           research notes
   output/          commit-stamped experiment output the notes are checked against
