@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # All four suites run offline: no market data is downloaded.
+      # All five suites run offline: no market data is downloaded.
       - name: Engine sanity checks (lookahead, embargo, deflated Sharpe)
         run: python research/00_sanity_checks.py
 
@@ -34,6 +34,9 @@ jobs:
 
       - name: Crypto data layer tests
         run: python research/11_smc_data_tests.py
+
+      - name: Market structure tests
+        run: python research/13_smc_structure_tests.py
 
   reports:
     # Re-runs the seeded experiments and checks every figure the notes quote.
