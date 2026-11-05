@@ -65,7 +65,7 @@ qlab/
   research_log.py  append-only record of every strategy tested
   lob/             limit order book: matching, agents, markout analysis
   prosperity/      competition harness (unofficial IMC Prosperity interface)
-  smc/             sweep / structure-shift / FVG strategy on BTC and ETH (in progress)
+  smc/             pre-registered sweep / structure-shift / FVG test on BTC and ETH
 research/          numbered experiment scripts
 reports/           research notes
   output/          commit-stamped experiment output the notes are checked against
@@ -122,6 +122,7 @@ Numbers below are the current output of the scripts named, regenerated September
 | Price priority (`05`) | two ticks inside takes **93.1%** of flow and **+373** PnL — of which **169.8** of **542.8** gross spread capture is returned as inventory PnL |
 | Staleness (`06`) | stale-minus-fresh markout gap **−0.008** under diffusion, **−0.083** with jumps |
 | Latency (`07`) | the same maker at the same latency took **59.9%** of flow in one field and **5.0%** in another; no markout ladder survives its own error bars |
+| SMC model, 16 pre-registered variants (`15`) | all lose after costs on BTC and ETH, 2018–2025: best **−0.148R** per trade; gross **−0.21R to +0.12R**, none beats its random-entry control. Holdout not opened |
 | Prosperity sweep, 48 configs (`10`) | champion **2,968** against dispersion **605**; loses **4.7%** out of sample and stays profitable across four regimes |
 
 The first row is the point of the repository. A 0.910 out-of-sample Sharpe looks like a result until you count the 66 attempts it took to find it and the 0.659 dispersion they scattered across; deflated, it is 0.052, which is nothing.
@@ -137,6 +138,7 @@ The last row is the control on that control: the same procedure applied where an
 - [`note_05_latency.md`](reports/note_05_latency.md) — latency is a position relative to competitors, not a quantity with a price. Includes a retracted trend from an earlier draft.
 - [`note_06_survivorship.md`](reports/note_06_survivorship.md) — index removals with no retrievable price history are the acquisitions and the failures. The data source deletes exactly the observations that cause the bias — and deleted one more between the August and September runs.
 - [`note_07_prosperity_harness.md`](reports/note_07_prosperity_harness.md) — the same selection discipline applied to a case where the edge is real.
+- [`note_08_smc_preregistered.md`](reports/note_08_smc_preregistered.md) — the ICT "2022 model", pre-registered before the data was downloaded and rejected: the entries time the market no better than random minutes, and the tight stop makes every trade expensive.
 
 Most of the notes document a measurement that was wrong before it was right — an engine that could see the future, a confounded instrument, a control parameter that swamped the effect, a trend read into noise, an order type that never rested, a report that drifted out of sync with its code. In this domain the difference between a result and an artefact is usually a detail in the setup rather than anything visible in the output, so the setup is what the notes are about.
 

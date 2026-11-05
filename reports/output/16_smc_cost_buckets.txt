@@ -1,0 +1,24 @@
+# research/16_smc_cost_buckets.py
+# commit 3c1e11ff0d1ac8bb0f96a405fb426081f80bcca7
+# python 3.13.5, numpy 2.5.4, pandas 3.1.0
+# Regenerate with: python3 research/16_smc_cost_buckets.py (needs the downloaded data)
+# ---
+Development trades 2018-01-01 .. 2025-04-30, BTCUSDT + ETHUSDT, all 16 variants pooled by timeframe pair. cost = fees + stop slippage, in R.
+
+5min/1h: 17,512 trades
+cost bucket   trades  gross R     se   net R    win
+<0.10R           381   -0.225  0.078  -0.303  21.3%
+0.10-0.25R     3,241   -0.039  0.030  -0.221  25.6%
+0.25-0.50R     6,156   -0.044  0.022  -0.408  25.5%
+0.50-1.00R     5,276   -0.105  0.024  -0.803  23.8%
+>=1.00R        2,458   -0.124  0.072  -1.923  21.3%
+
+15min/4h: 5,941 trades
+cost bucket   trades  gross R     se   net R    win
+<0.10R           753   -0.152  0.058  -0.226  22.6%
+0.10-0.25R     2,694   +0.029  0.034  -0.143  27.0%
+0.25-0.50R     1,718   +0.015  0.043  -0.330  26.5%
+0.50-1.00R       613   +0.066  0.077  -0.607  27.2%
+>=1.00R          163   -0.276  0.145  -2.068  20.9%
+
+The same trade appears once per variant that takes it, so buckets pooled across variants overlap and their standard errors are understated.
