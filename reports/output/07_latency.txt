@@ -1,5 +1,5 @@
 # research/07_latency.py
-# commit 1bda79d613eeb903c52a978ab8f64b1a0b42209b
+# commit c527066bd99c8bd2e8a3faaa8b7c9a1931383b00
 # python 3.13.5, numpy 2.5.4, pandas 3.1.0
 # Regenerate with: python3 research/reproduce.py
 # ---
