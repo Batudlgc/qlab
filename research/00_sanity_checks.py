@@ -67,5 +67,21 @@ d1 = validation.deflated_sharpe(rf.returns, n_trials=1)
 d100 = validation.deflated_sharpe(rf.returns, n_trials=100)
 check("deflated Sharpe penalises trials", d100 <= d1, f"({d100:.4f} <= {d1:.4f})")
 
+# 7. With the default trial dispersion, the test must be able to say yes and no.
+#    A strong, steady edge over ten years survives 20 trials; pure noise does not
+#    survive 50. A default that sets the bar from the strategy's own Sharpe fails the
+#    first of these from 4 trials up, because the bar then always sits above it.
+days = pd.bdate_range("2010-01-01", periods=2500)
+edge = pd.Series(rng.normal(0.0008, 0.008, len(days)), index=days)   # Sharpe ~1.6
+noise = pd.Series(rng.normal(0.0, 0.010, len(days)), index=days)
+de = validation.deflated_sharpe(edge, n_trials=20)
+dn = validation.deflated_sharpe(noise, n_trials=50)
+check("default DSR: real edge survives 20 trials", de > 0.95, f"(dsr={de:.4f})")
+check("default DSR: noise fails 50 trials", dn < 0.5, f"(dsr={dn:.4f})")
+#    Check 6 saturates at 1.0 on perfect foresight; repeat it where the value can move.
+mid = pd.Series(rng.normal(0.0003, 0.010, len(days)), index=days)     # Sharpe ~0.5
+m1, m100 = validation.deflated_sharpe(mid, n_trials=1), validation.deflated_sharpe(mid, n_trials=100)
+check("default DSR: strictly lower with more trials", m100 < m1, f"({m100:.4f} < {m1:.4f})")
+
 print("\n" + ("ALL CHECKS PASSED" if not fails else f"FAILURES: {fails}"))
 sys.exit(1 if fails else 0)

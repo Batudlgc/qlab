@@ -97,12 +97,23 @@ def deflated_sharpe(returns: pd.Series, n_trials: int,
 
     This is the number that separates a research process from curve fitting.
     Report it, and report `n_trials` honestly - see research_log.py.
+
+    `trial_sr_std` is the standard deviation of the per-period Sharpe ratios across
+    the trials. Pass it whenever the trials' Sharpes are known (the sweeps do). If it
+    is omitted, the null is assumed: no trial had an edge, so their per-period Sharpe
+    estimates differ only by sampling noise, which has standard deviation about
+    1/sqrt(T - 1) for T observations.
+
+    The earlier default used this strategy's own Sharpe as the dispersion. That puts
+    the bar at a fixed multiple of the observed Sharpe (1.05x at 4 trials, 1.9x at 20),
+    so from 4 trials up nothing could pass: a steady 1.6 Sharpe over ten years scored
+    0.0002 at 20 trials.
     """
     r = pd.Series(returns).dropna()
     if n_trials < 1:
         raise ValueError("n_trials must be >= 1")
     if trial_sr_std is None:
-        trial_sr_std = abs(sharpe(r, periods)) / np.sqrt(periods) or 0.01
+        trial_sr_std = 1.0 / np.sqrt(max(len(r) - 1, 1))
     euler = 0.5772156649015329
     if n_trials == 1:
         sr0 = 0.0
